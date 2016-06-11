@@ -123,8 +123,9 @@ public class MainActivityFragment extends Fragment {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 Log.v(LOG_TAG, "Build URL " + url.toString());
                 urlConnection.setRequestMethod("GET");
-               // urlConnection.addRequestProperty();
                 urlConnection.connect();
+
+
 
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
