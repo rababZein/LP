@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +31,9 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
     private final  String LOG_TAG = FetchPeople.class.getSimpleName();
     public ArrayList<People> peoples;
-
+    public GridView mGridView;
+    public ProgressBar mProgressBar;
+    public GridViewAdapter mGridAdapter;
 
     public MainActivityFragment() {
     }
@@ -37,19 +42,27 @@ public class MainActivityFragment extends Fragment {
     public void onStart() {
         super.onStart();
         peoples = new ArrayList<>();
+        mGridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, peoples);
+        mGridView.setAdapter(mGridAdapter);
 
+        FetchAllPeople fetchAllPeople = new FetchAllPeople();
+        fetchAllPeople.execute();
 
-        InsertPeople insertPeople = new InsertPeople();
-        insertPeople.execute("mahmoud","mahmoud@yahoo.com");
-
-        FetchPeople fetchPeople = new FetchPeople();
-        fetchPeople.execute("7"); // user ID
+//        InsertPeople insertPeople = new InsertPeople();
+//        insertPeople.execute("mahmoud","mahmoud@yahoo.com");
+//
+//        FetchPeople fetchPeople = new FetchPeople();
+//        fetchPeople.execute("1"); // user ID
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mGridView = (GridView) rootView.findViewById(R.id.gridView);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        return rootView;
     }
 
     public class InsertPeople extends  AsyncTask <String,Void,Integer>{
@@ -57,7 +70,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected Integer doInBackground(String... params) {
             Integer result=0;
-            HttpURLConnection urlConnection = null;
+            HttpURLConnection myConnection = null;
             try {
 
                 final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/signup.php";
@@ -67,7 +80,7 @@ public class MainActivityFragment extends Fragment {
 
                 URL myUrl = new URL(BASE_URL);
 
-                HttpURLConnection myConnection = (HttpURLConnection) myUrl.openConnection();
+                myConnection = (HttpURLConnection) myUrl.openConnection();
                 myConnection.setRequestMethod("POST");
                 myConnection.setDoOutput(true);
 
@@ -85,14 +98,11 @@ public class MainActivityFragment extends Fragment {
                 wr.close();
                 reader.close();
             }catch (Exception e){
-
                 Log.e("PlaceholderFragment", "Error ", e);
-
                 return result;
-
             }finally{
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
+                if (myConnection != null) {
+                    myConnection.disconnect();
                 }
 
             }
@@ -104,6 +114,16 @@ public class MainActivityFragment extends Fragment {
     public class FetchPeople  extends AsyncTask<String, Void, Integer> {
 
         @Override
+        protected void onPostExecute(Integer integer) {
+            if (integer == 1) {
+                mGridAdapter.setGridData(peoples);
+            } else {
+                Toast.makeText(getContext(), "Failed to fetch data!", Toast.LENGTH_SHORT).show();
+            }
+            mProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
         protected Integer doInBackground(String... params) {
             int result = 0;
             HttpURLConnection urlConnection = null;
@@ -111,7 +131,7 @@ public class MainActivityFragment extends Fragment {
             String peopleJsonStr = null;
             try {
 
-                final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/info.php?uid=1";
+                final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/info.php?";
                 final String USER_PARAM = "uid";
 
 
@@ -219,4 +239,99 @@ public class MainActivityFragment extends Fragment {
 
 
     }
+
+
+    public class FetchAllPeople  extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            if (integer == 1) {
+                mGridAdapter.setGridData(peoples);
+            } else {
+                Toast.makeText(getContext(), "Failed to fetch data!", Toast.LENGTH_SHORT).show();
+            }
+            mProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            int result = 0;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            String peopleJsonStr = null;
+            try {
+
+                final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/all.php";
+
+
+                Uri builduri = Uri.parse(BASE_URL).buildUpon()
+                        .build();
+
+                URL url = new URL(builduri.toString());
+                urlConnection = (HttpURLConnection) url.openConnection();
+                Log.v(LOG_TAG, "Build URL " + url.toString());
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    return result;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    return result;
+                }
+
+                peopleJsonStr = buffer.toString();
+                Log.v(LOG_TAG, "people json string " + peopleJsonStr);
+
+
+            }catch (Exception e){
+
+                Log.e("PlaceholderFragment", "Error ", e);
+
+                return result;
+
+            }finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+
+
+
+            try {
+
+
+                getPeopleDataFromJson(peopleJsonStr);
+                result=1;
+                return result;
+            } catch (JSONException e) {
+
+
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.getStackTrace();
+            }
+            return result;
+
+        }
+    }
+
 }
