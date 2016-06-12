@@ -1,5 +1,6 @@
 package com.example.rabab.lp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -61,6 +63,22 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mGridView = (GridView) rootView.findViewById(R.id.gridView);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+                People item = (People) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(getActivity(), InfoActivity.class);
+                intent.putExtra("id", item.getId());
+                intent.putExtra("name", item.getName());
+                intent.putExtra("email", item.getEmail());
+                startActivity(intent);
+
+
+
+            }
+        });
 
         return rootView;
     }
