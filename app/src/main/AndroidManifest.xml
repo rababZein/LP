@@ -25,6 +25,10 @@
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".AddPeopleActivity"
+            android:label="@string/title_activity_add_people"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

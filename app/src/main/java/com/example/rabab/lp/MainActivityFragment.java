@@ -83,50 +83,38 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    public class InsertPeople extends  AsyncTask <String,Void,Integer>{
+    public void getPeopleDataFromJson(String peopleJsonStr) throws JSONException {
+        final String STATUS = "status";
+        final String INFO = "info";
+        final String NAME = "name";
+        final String EMAIL = "email";
+        JSONObject peopleJson = new JSONObject(peopleJsonStr);
+        JSONArray resultsArray = peopleJson.getJSONArray(INFO);
 
-        @Override
-        protected Integer doInBackground(String... params) {
-            Integer result=0;
-            HttpURLConnection myConnection = null;
-            try {
-
-                final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/signup.php";
-                final String USER_NAME_PARAM = "name";
-                final String USER_EMAIL_PARAM = "email";
+        People people;
 
 
-                URL myUrl = new URL(BASE_URL);
+        for (int i = 0; i < resultsArray.length(); i++) {
 
-                myConnection = (HttpURLConnection) myUrl.openConnection();
-                myConnection.setRequestMethod("POST");
-                myConnection.setDoOutput(true);
+            String name;
+            String email;
 
-                DataOutputStream wr = new DataOutputStream(myConnection.getOutputStream());
-                wr.writeBytes(USER_NAME_PARAM + "=" + params[0] + "&" + USER_EMAIL_PARAM + "=" + params[1]);
+            people = new People();
+            JSONObject user = resultsArray.getJSONObject(i);
+            name = user.getString(NAME);
+            people.setName(name);
+            email = user.getString(EMAIL);
+            people.setEmail(email);
 
-                wr.flush();
-
-                String line;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(myConnection.getInputStream()));
-
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-                wr.close();
-                reader.close();
-            }catch (Exception e){
-                Log.e("PlaceholderFragment", "Error ", e);
-                return result;
-            }finally{
-                if (myConnection != null) {
-                    myConnection.disconnect();
-                }
-
-            }
-
-            return result;
+            peoples.add(people);
         }
+
+        for (People p : peoples) {
+            Log.v(LOG_TAG, "User Name entry: " + p.getName());
+            Log.v(LOG_TAG, "User Email entry: " + p.getEmail());
+        }
+
+
     }
 
     public class FetchPeople  extends AsyncTask<String, Void, Integer> {
@@ -224,41 +212,6 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    public void  getPeopleDataFromJson(String peopleJsonStr) throws JSONException {
-        final String STATUS = "status";
-        final String INFO = "info";
-        final String NAME = "name";
-        final String EMAIL = "email";
-        JSONObject peopleJson = new JSONObject(peopleJsonStr);
-        JSONArray resultsArray = peopleJson.getJSONArray(INFO);
-
-        People people;
-
-
-        for(int i = 0; i < resultsArray.length(); i++) {
-
-            String name;
-            String email;
-
-            people = new People();
-            JSONObject user = resultsArray.getJSONObject(i);
-            name = user.getString(NAME);
-            people.setName(name);
-            email = user.getString(EMAIL);
-            people.setEmail(email);
-
-            peoples.add(people);
-        }
-
-        for (People p : peoples) {
-            Log.v(LOG_TAG, "User Name entry: " + p.getName());
-            Log.v(LOG_TAG, "User Email entry: " + p.getEmail());
-        }
-
-
-    }
-
-
     public class FetchAllPeople  extends AsyncTask<String, Void, Integer> {
 
         @Override
@@ -351,5 +304,6 @@ public class MainActivityFragment extends Fragment {
 
         }
     }
+
 
 }
