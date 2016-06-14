@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
+
 public class AddPeopleActivity extends AppCompatActivity {
     private final String LOG_TAG = AddPeopleActivity.class.getSimpleName();
     EditText nameEditText = null;
@@ -100,6 +102,8 @@ public class AddPeopleActivity extends AppCompatActivity {
             return result;
         }
     }
+
+
 
 
 }
