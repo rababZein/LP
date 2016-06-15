@@ -21,7 +21,7 @@
             android:layout_height="fill_parent">
             <TextView
                 android:id="@+id/EnterNameTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Name"
                 android:textSize="10pt">
@@ -35,7 +35,7 @@
             </EditText>
             <TextView
                 android:id="@+id/EnterEmailTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Email"
                 android:textSize="10pt">
@@ -47,6 +47,25 @@
                 android:inputType="textEmailAddress"
                 android:layout_width="fill_parent">
             </EditText>
+
+            <ImageView
+                android:id="@+id/imgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+            </ImageView>
+
+            <Button
+                android:id="@+id/buttonLoadPicture"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0"
+                android:onClick="loadImagefromGallery"
+                android:text="Load Picture" >
+            </Button>
+
+
             <Button
                 android:id="@+id/addNewPeople"
                 android:layout_width="wrap_content"

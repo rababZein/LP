@@ -2,15 +2,17 @@ package com.example.rabab.lp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.Html;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -58,7 +60,28 @@ public class GridViewAdapter  extends ArrayAdapter<People> {
             holder.titleTextView.setText(Html.fromHtml(item.getName()));
 
        // Picasso.with(context).load(item.getImage()).into(holder.imageView);
-        Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.imageView);
+       // byte[] data = Base64.decode(item.getPassword(), Base64.DEFAULT);
+       // String text = new String(data, "UTF-8");
+        //Picasso.with(context).load(String.valueOf(data)).into(holder.imageView);
+        Log.e("GV--getPassword", String.valueOf(item.getPassword().length()));
+        byte[] decodedString = Base64.decode(item.getPassword(), Base64.NO_WRAP);
+        Log.e("bytes decode length ", String.valueOf(decodedString.length));
+
+        Log.e("GV--decodedString",decodedString.toString());
+
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//        if (decodedByte.toString() != null)
+//            Log.e("GV--decodedByte",decodedByte.toString());
+//        else
+//            Log.e("GV--decodedByte", "is null");
+
+
+       holder.imageView.setImageBitmap(decodedByte);
+//
+//        holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(decodedByte, holder.imageView.getWidth(),
+//                holder.imageView.getHeight(), false));
+
+
         return row;
     }
 

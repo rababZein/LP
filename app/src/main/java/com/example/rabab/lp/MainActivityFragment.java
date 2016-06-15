@@ -19,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -88,6 +87,7 @@ public class MainActivityFragment extends Fragment {
         final String INFO = "info";
         final String NAME = "name";
         final String EMAIL = "email";
+        final String PSW = "password";
         JSONObject peopleJson = new JSONObject(peopleJsonStr);
         JSONArray resultsArray = peopleJson.getJSONArray(INFO);
 
@@ -98,14 +98,15 @@ public class MainActivityFragment extends Fragment {
 
             String name;
             String email;
-
+            String password;
             people = new People();
             JSONObject user = resultsArray.getJSONObject(i);
             name = user.getString(NAME);
             people.setName(name);
             email = user.getString(EMAIL);
             people.setEmail(email);
-
+            password = user.getString(PSW);
+            people.setPassword(password);
             peoples.add(people);
         }
 
