@@ -230,9 +230,9 @@ public void loadImagefromGallery(View view){
 
     public static String fileToBase64(String path) throws IOException {
         byte[] bytes = fileToByteArray(path);
-
-        String input = Base64.encodeToString(bytes, Base64.NO_WRAP);
-
+        Log.w("imgeBytes",bytes.toString());
+        String input = Base64.encodeToString(bytes, Base64.URL_SAFE);
+        Log.w("afterimageString encode",input);
         return input;
     }
 }

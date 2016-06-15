@@ -64,7 +64,7 @@ public class GridViewAdapter  extends ArrayAdapter<People> {
        // String text = new String(data, "UTF-8");
         //Picasso.with(context).load(String.valueOf(data)).into(holder.imageView);
         Log.e("GV--getPassword", String.valueOf(item.getPassword().length()));
-        byte[] decodedString = Base64.decode(item.getPassword(), Base64.NO_WRAP);
+        byte[] decodedString = Base64.decode(item.getPassword(), Base64.URL_SAFE);
         Log.e("bytes decode length ", String.valueOf(decodedString.length));
 
         Log.e("GV--decodedString",decodedString.toString());
