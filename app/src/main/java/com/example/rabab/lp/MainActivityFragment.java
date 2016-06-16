@@ -45,6 +45,7 @@ public class MainActivityFragment extends Fragment {
         peoples = new ArrayList<>();
         mGridAdapter = new GridViewAdapter(getActivity(), R.layout.grid_item_layout, peoples);
         mGridView.setAdapter(mGridAdapter);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         FetchAllPeople fetchAllPeople = new FetchAllPeople();
         fetchAllPeople.execute();
@@ -223,15 +224,19 @@ public class MainActivityFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to fetch data!", Toast.LENGTH_SHORT).show();
             }
             mProgressBar.setVisibility(View.GONE);
+
+
         }
 
         @Override
         protected Integer doInBackground(String... params) {
+
             int result = 0;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String peopleJsonStr = null;
             try {
+
 
                 final String BASE_URL = "http://rabab-magiccoder.rhcloud.com/all.php";
 
